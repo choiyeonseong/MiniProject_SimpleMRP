@@ -6,14 +6,14 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Input;
 
-namespace MRPApp.View.Setting
+namespace MRPApp.View.Schedule
 {
     /// <summary>
     /// MyAccount.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class SettingList : Page
+    public partial class ScheduleList : Page
     {
-        public SettingList()
+        public ScheduleList()
         {
             InitializeComponent();
         }
@@ -36,8 +36,8 @@ namespace MRPApp.View.Setting
         private async void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
             var settings = GrdData.SelectedItem as Model.Settings;
-            settings.CodeName = TxtCodeName.Text;
-            settings.CodeDesc = TxtCodeDesc.Text;
+            //settings.CodeName = TxtCodeName.Text;
+            //settings.CodeDesc = TxtCodeDesc.Text;
             settings.ModDate = DateTime.Now;
 
             try
@@ -74,9 +74,9 @@ namespace MRPApp.View.Setting
             if (IsValidInputs() != true) return;    // 입력할 값이 유효한지 확인
             
             var settings = new Model.Settings();
-            settings.BasicCode = TxtBasicCode.Text;
-            settings.CodeName = TxtCodeName.Text;
-            settings.CodeDesc = TxtCodeDesc.Text;
+            //settings.BasicCode = TxtBasicCode.Text;
+            //settings.CodeName = TxtCodeName.Text;
+            //settings.CodeDesc = TxtCodeDesc.Text;
             settings.RegDate = DateTime.Now;
             settings.RedID = "MRP";
 
@@ -107,12 +107,12 @@ namespace MRPApp.View.Setting
             try
             {
                 var settings = GrdData.SelectedItem as Model.Settings;
-                TxtBasicCode.Text = settings.BasicCode;
-                TxtCodeName.Text = settings.CodeName;
-                TxtCodeDesc.Text = settings.CodeDesc;
+                //TxtBasicCode.Text = settings.BasicCode;
+                //TxtCodeName.Text = settings.CodeName;
+                //TxtCodeDesc.Text = settings.CodeDesc;
 
-                TxtBasicCode.IsReadOnly = true;
-                TxtBasicCode.Background = new SolidColorBrush(Colors.LightGray);
+                //TxtBasicCode.IsReadOnly = true;
+                //TxtBasicCode.Background = new SolidColorBrush(Colors.LightGray);
             }
             catch (Exception ex)
             {
@@ -171,8 +171,8 @@ namespace MRPApp.View.Setting
         // 에러메시지 초기화
         private void InitErrorMessage()
         {
-            LblBasicCode.Visibility = LblCodeName.Visibility
-                  = LblCodeDesc.Visibility = Visibility.Hidden;
+            //LblBasicCode.Visibility = LblCodeName.Visibility
+            //      = LblCodeDesc.Visibility = Visibility.Hidden;
         }
 
         // 데이터 그리드 새로고침
@@ -185,11 +185,11 @@ namespace MRPApp.View.Setting
         // textbox 초기화
         private void ClearInputs()
         {
-            TxtBasicCode.IsReadOnly = false;
-            TxtBasicCode.Background = new SolidColorBrush(Colors.White);
+            //TxtBasicCode.IsReadOnly = false;
+            //TxtBasicCode.Background = new SolidColorBrush(Colors.White);
 
-            TxtBasicCode.Text = TxtCodeName.Text = TxtCodeDesc.Text = string.Empty; // ""
-            TxtBasicCode.Focus();
+            //TxtBasicCode.Text = TxtCodeName.Text = TxtCodeDesc.Text = string.Empty; // ""
+            //TxtBasicCode.Focus();
         }
 
         // 입력데이터 검증 메서드
@@ -198,25 +198,25 @@ namespace MRPApp.View.Setting
             var isValid = true;
             InitErrorMessage();
 
-            if (string.IsNullOrEmpty(TxtBasicCode.Text))
-            {
-                LblBasicCode.Visibility = Visibility.Visible;
-                LblBasicCode.Text = "코드를 입력하세요.";
-                isValid = false;
-            }
-            else if (Logic.DataAccess.GetSettings().Where(s => s.BasicCode.Equals(TxtBasicCode.Text)).Count() > 0)
-            {
-                LblBasicCode.Visibility = Visibility.Visible;
-                LblBasicCode.Text = "중복코드가 존재합니다.";
-                isValid = false;
-            }
+            //if (string.IsNullOrEmpty(TxtBasicCode.Text))
+            //{
+            //    LblBasicCode.Visibility = Visibility.Visible;
+            //    LblBasicCode.Text = "코드를 입력하세요.";
+            //    isValid = false;
+            //}
+            //else if (Logic.DataAccess.GetSettings().Where(s => s.BasicCode.Equals(TxtBasicCode.Text)).Count() > 0)
+            //{
+            //    LblBasicCode.Visibility = Visibility.Visible;
+            //    LblBasicCode.Text = "중복코드가 존재합니다.";
+            //    isValid = false;
+            //}
 
-            if (string.IsNullOrEmpty(TxtCodeName.Text))
-            {
-                LblCodeName.Visibility = Visibility.Visible;
-                LblCodeName.Text = "코드명를 입력하세요.";
-                isValid = false;
-            }
+            //if (string.IsNullOrEmpty(TxtCodeName.Text))
+            //{
+            //    LblCodeName.Visibility = Visibility.Visible;
+            //    LblCodeName.Text = "코드명를 입력하세요.";
+            //    isValid = false;
+            //}
 
             return isValid;
         }

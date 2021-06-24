@@ -11,7 +11,7 @@ namespace MRPApp.Logic
     public class DataAccess
     {
         // Settings 테이블에서 데이터 가져오기
-        internal static List<Settings> GetSettings()
+        public static List<Settings> GetSettings()
         {
             List<Model.Settings> settings;
 
@@ -21,7 +21,7 @@ namespace MRPApp.Logic
             return settings;
         }
 
-        internal static int SetSettings(Settings item)
+        public static int SetSettings(Settings item)
         {
             using (var ctx = new MRPEntities())
             {
@@ -30,7 +30,7 @@ namespace MRPApp.Logic
             }
         }
 
-        internal static int DelSettings(Settings item)
+        public static int DelSettings(Settings item)
         {
             using (var ctx = new MRPEntities())
             {
