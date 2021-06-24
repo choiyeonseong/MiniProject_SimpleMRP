@@ -1,16 +1,10 @@
-﻿using iTextSharp.text;
-using iTextSharp.text.pdf;
-using Microsoft.Win32;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Input;
 
 namespace MRPApp.View.Setting
 {
@@ -28,31 +22,8 @@ namespace MRPApp.View.Setting
         {
             try
             {
-               /* // Store 테이블 데이터 읽어와야 함
-                List<Model.Store> stores = new List<Model.Store>();
-                List<Model.StockStore> stockStores = new List<Model.StockStore>();
-                stores = Logic.DataAccess.GetStores(); // 수영1 ...
-
-                // TODO : stores 데이터를 stockStores로 복사
-                foreach (Model.Store item in stores)
-                {
-                    var store = new Model.StockStore()
-                    {
-                        StoreID = item.StoreID,
-                        StoreName = item.StoreName,
-                        StoreLocation = item.StoreLocation,
-                        ItemStatus = item.ItemStatus,
-                        TagID = item.TagID,
-                        BarcodeID = item.BarcodeID,
-                        StockQuantity = 0
-                    };
-                    // 
-                    store.StockQuantity = Logic.DataAccess.GetStocks().Where(t => t.StoreID.Equals(store.StoreID)).Count();
-
-                    stockStores.Add(store);
-                }
-
-                this.DataContext = stockStores;*/
+                LoadGridData();     // 데이터 그리드
+                InitErrorMessage(); // 에러메시지 숨김
             }
             catch (Exception ex)
             {
@@ -60,105 +31,194 @@ namespace MRPApp.View.Setting
                 throw ex;
             }
         }
-
-        private void BtnEditUser_Click(object sender, RoutedEventArgs e)
+      
+        // 수정 버튼
+        private async void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                //NavigationService.Navigate(new EditUser());
-            }
-            catch (Exception ex)
-            {
-                Commons.LOGGER.Error($"예외발생 BtnEditUser_Click : {ex}");
-                throw ex;
-            }
-        }
-
-        private void BtnAddStore_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                //NavigationService.Navigate(new AddStore());
-            }
-            catch (Exception ex)
-            {
-                Commons.LOGGER.Error($"예외발생 BtnAddStore_Click : {ex}");
-                throw ex;
-            }
-        }
-
-        private void BtnEditStore_Click(object sender, RoutedEventArgs e)
-        {
-            //if (GrdData.SelectedItem == null)
-            //{
-            //    Commons.ShowMessageAsync("창고수정", "수정할 창고를 선택하세요");
-            //    return;
-            //}
+            var settings = GrdData.SelectedItem as Model.Settings;
+            settings.CodeName = TxtCodeName.Text;
+            settings.CodeDesc = TxtCodeDesc.Text;
+            settings.ModDate = DateTime.Now;
 
             try
             {
-                //var storeId = (GrdData.SelectedItem as Model.Store).StoreID;
-                //NavigationService.Navigate(new EditStore(storeId));
+                var result = Logic.DataAccess.SetSettings(settings);
+                if(result == 0)
+                {
+                    Commons.LOGGER.Error("데이터 수정시 오류발생");
+                    await Commons.ShowMessageAsync("오류", "데이터 수정실패!");
+                }
+                else
+                {
+                    Commons.LOGGER.Info($"데이터 수정 성공 : {settings.BasicCode}");   // 로그에 남음
+                    ClearInputs();  // 새로고침후 textbox 초기화
+                    LoadGridData(); // 수정 후 그리드 데이터 새로고침
+                }
             }
             catch (Exception ex)
             {
-                Commons.LOGGER.Error($"예외발생 BtnEditStore_Click : {ex}");
-                throw ex;
+                Commons.LOGGER.Error($"예외발생 {ex}");
             }
         }
 
-        private void BtnExportExcel_Click(object sender, RoutedEventArgs e)
+        private void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filter = "Excel File (*.xlsx)|*.xlsx"; // 엑셀확장자
-            dialog.FileName = "";
-            if (dialog.ShowDialog() == true)
+            var search = TxtSearch.Text.Trim();
+
+            var settings = Logic.DataAccess.GetSettings().Where(s => s.CodeName.Contains(search)).ToList();
+            this.DataContext = settings;
+        }
+
+        private async void BtnInsert_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsValidInputs() != true) return;    // 입력할 값이 유효한지 확인
+            
+            var settings = new Model.Settings();
+            settings.BasicCode = TxtBasicCode.Text;
+            settings.CodeName = TxtCodeName.Text;
+            settings.CodeDesc = TxtCodeDesc.Text;
+            settings.RegDate = DateTime.Now;
+            settings.RedID = "MRP";
+
+            try
+            {
+                var result = Logic.DataAccess.SetSettings(settings);
+                if (result == 0)
+                {
+                    Commons.LOGGER.Error("데이터 입력시 오류발생");
+                    await Commons.ShowMessageAsync("오류", "데이터 입력실패!");
+                }
+                else
+                {
+                    Commons.LOGGER.Info($"데이터 입력 성공 : {settings.BasicCode}");   // 로그에 남음
+                    ClearInputs();  // 새로고침후 textbox 초기화
+                    LoadGridData(); // 수정 후 그리드 데이터 새로고침
+                }
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 {ex}");
+            }
+        }
+
+        // 선택한 셀값을 textbox에 표시
+        private void GrdData_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
+        {
+            try
+            {
+                var settings = GrdData.SelectedItem as Model.Settings;
+                TxtBasicCode.Text = settings.BasicCode;
+                TxtCodeName.Text = settings.CodeName;
+                TxtCodeDesc.Text = settings.CodeDesc;
+
+                TxtBasicCode.IsReadOnly = true;
+                TxtBasicCode.Background = new SolidColorBrush(Colors.LightGray);
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 {ex}");
+            }
+        }
+
+        // 신규 버튼
+        private void BtnNew_Click(object sender, RoutedEventArgs e)
+        {
+            ClearInputs();  // 새로운 데이터 입력하기 위해 textbox 초기화
+        }
+
+
+        // 삭제 버튼 - 거의 사용하지 않음
+        private async void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = GrdData.SelectedItem as Model.Settings;
+
+            if (settings == null)   // 선택된 값이 없을 때
+            {
+                await Commons.ShowMessageAsync("삭제", "삭제할 코드를 선택하세요");
+                return;
+            }
+            else
             {
                 try
                 {
-                    IWorkbook workbook = new XSSFWorkbook(); // xlsx용   // new HSSFWorkbook(); // xls(이전버전용)
-                    ISheet sheet = workbook.CreateSheet("Sheet1"); // 이름변경 가능
-                                                                   // 헤더row 
-                    IRow rowHeader = sheet.CreateRow(0);
-                    ICell cell = rowHeader.CreateCell(0);
-                    cell.SetCellValue("순번");
-                    cell = rowHeader.CreateCell(1);
-                    cell.SetCellValue("창고명");
-                    cell = rowHeader.CreateCell(2);
-                    cell.SetCellValue("창고위치");
-                    cell = rowHeader.CreateCell(3);
-                    cell.SetCellValue("재고수");
-
-                    //for (int i = 0; i < GrdData.Items.Count; i++)
-                    //{
-                    //    IRow row = sheet.CreateRow(i + 1); // 
-                    //    //if (GrdData.Items[i] is Model.StockStore)
-                    //    //{
-                    //    //    var stockStore = GrdData.Items[i] as Model.StockStore;
-                    //    //    ICell dataCell = row.CreateCell(0);
-                    //    //    dataCell.SetCellValue(stockStore.StoreID);
-                    //    //    dataCell = row.CreateCell(1);
-                    //    //    dataCell.SetCellValue(stockStore.StoreName);
-                    //    //    dataCell = row.CreateCell(2);
-                    //    //    dataCell.SetCellValue(stockStore.StoreLocation);
-                    //    //    dataCell = row.CreateCell(3);
-                    //    //    dataCell.SetCellValue(stockStore.StockQuantity);
-                    //    //}                        
-                    //}
-
-                    // 파일저장
-                    using (var fs = new FileStream(dialog.FileName, FileMode.OpenOrCreate, FileAccess.Write))
+                    var result = Logic.DataAccess.DelSettings(settings);
+                    if (result == 0)
                     {
-                        workbook.Write(fs);
+                        Commons.LOGGER.Error("데이터 삭제시 오류발생");
+                        await Commons.ShowMessageAsync("오류", "데이터 삭제실패!");
                     }
-
-                    Commons.ShowMessageAsync("엑셀저장", "엑셀export 성공!");
+                    else
+                    {
+                        Commons.LOGGER.Info($"데이터 삭제 성공 : {settings.BasicCode}");   // 로그에 남음
+                        ClearInputs();  // 새로고침후 textbox 초기화
+                        LoadGridData(); // 수정 후 그리드 데이터 새로고침
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Commons.ShowMessageAsync("예외", $"예외발생 {ex}");
+                    Commons.LOGGER.Error($"예외발생 {ex}");
                 }
             }
+        }
+
+        // 엔터키로 텍스트박스에서 버튼으로 이동(KeyDown 이벤트)
+        private void TxtSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key==System.Windows.Input.Key.Enter)
+                BtnSearch_Click(sender, e);
+        }
+
+        // 에러메시지 초기화
+        private void InitErrorMessage()
+        {
+            LblBasicCode.Visibility = LblCodeName.Visibility
+                  = LblCodeDesc.Visibility = Visibility.Hidden;
+        }
+
+        // 데이터 그리드 새로고침
+        private void LoadGridData()
+        {
+            List<Model.Settings> settings = Logic.DataAccess.GetSettings();
+            this.DataContext = settings;
+        }
+
+        // textbox 초기화
+        private void ClearInputs()
+        {
+            TxtBasicCode.IsReadOnly = false;
+            TxtBasicCode.Background = new SolidColorBrush(Colors.White);
+
+            TxtBasicCode.Text = TxtCodeName.Text = TxtCodeDesc.Text = string.Empty; // ""
+            TxtBasicCode.Focus();
+        }
+
+        // 입력데이터 검증 메서드
+        private bool IsValidInputs()
+        {
+            var isValid = true;
+            InitErrorMessage();
+
+            if (string.IsNullOrEmpty(TxtBasicCode.Text))
+            {
+                LblBasicCode.Visibility = Visibility.Visible;
+                LblBasicCode.Text = "코드를 입력하세요.";
+                isValid = false;
+            }
+            else if (Logic.DataAccess.GetSettings().Where(s => s.BasicCode.Equals(TxtBasicCode.Text)).Count() > 0)
+            {
+                LblBasicCode.Visibility = Visibility.Visible;
+                LblBasicCode.Text = "중복코드가 존재합니다.";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(TxtCodeName.Text))
+            {
+                LblCodeName.Visibility = Visibility.Visible;
+                LblCodeName.Text = "코드명를 입력하세요.";
+                isValid = false;
+            }
+
+            return isValid;
         }
     }
 }
