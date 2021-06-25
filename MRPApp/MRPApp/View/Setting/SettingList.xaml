@@ -159,7 +159,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding BasicCode}" Header="코드" Width="100" IsReadOnly="True" />
                     <DataGridTextColumn Binding="{Binding CodeName}" Header="코드명" Width="1*" IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding CodeDesc}" Header="코드설명" Width="1*" IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding CodeDesc}" Header="코드설명" Width="1*" IsReadOnly="True"/>
                     <DataGridTextColumn Binding="{Binding RegDate, StringFormat='yyyy-MM-dd HH:mm:ss'}" Header="등록일" Width="1*" IsReadOnly="True" />
                     <DataGridTextColumn Width="10" IsReadOnly="True" />
                 </DataGrid.Columns>

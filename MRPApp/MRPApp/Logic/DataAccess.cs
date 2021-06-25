@@ -10,17 +10,16 @@ namespace MRPApp.Logic
 {
     public class DataAccess
     {
-        // Settings 테이블에서 데이터 가져오기
+        #region Settings 테이블 데이터 처리
         public static List<Settings> GetSettings()
         {
-            List<Model.Settings> settings;
+            List<Model.Settings> list;
 
             using (var ctx = new MRPEntities()) // DBContext 이름으로 connection
-                settings = ctx.Settings.ToList();
+                list = ctx.Settings.ToList();   // SELECT
 
-            return settings;
+            return list;
         }
-
         public static int SetSettings(Settings item)
         {
             using (var ctx = new MRPEntities())
@@ -29,7 +28,6 @@ namespace MRPApp.Logic
                 return ctx.SaveChanges();       // COMMIT
             }
         }
-
         public static int DelSettings(Settings item)
         {
             using (var ctx = new MRPEntities())
@@ -39,5 +37,28 @@ namespace MRPApp.Logic
                 return ctx.SaveChanges();
             }
         }
+        #endregion
+
+        #region Schedules 테이블에서 데이터 가져오기
+        internal static List<Schedules> GetSchedules()
+        {
+            List<Model.Schedules> list;
+
+            using (var ctx = new MRPEntities()) // DBContext 이름으로 connection
+                list = ctx.Schedules.ToList();  // SELECT
+
+            return list;
+        }
+
+        internal static int SetSchedules(Schedules item)
+        {
+            using (var ctx = new MRPEntities())
+            {
+                ctx.Schedules.AddOrUpdate(item); // UPDATE
+                return ctx.SaveChanges();       // COMMIT
+            }
+        }
+
+        #endregion
     }
 }

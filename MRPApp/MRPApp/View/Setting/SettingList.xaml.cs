@@ -39,6 +39,7 @@ namespace MRPApp.View.Setting
             settings.CodeName = TxtCodeName.Text;
             settings.CodeDesc = TxtCodeDesc.Text;
             settings.ModDate = DateTime.Now;
+            settings.ModID = "MRP";
 
             try
             {
