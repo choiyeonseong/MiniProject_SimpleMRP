@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceSubApp", "DeviceSubAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MRPApp.Test", "MRPApp.Test\MRPApp.Test.csproj", "{B4FD63F3-220D-4867-9D2E-DA9A42B74E8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMQTT", "TestMQTT\TestMQTT.csproj", "{D83A9845-AE7E-4176-9176-D7E832AF22C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B4FD63F3-220D-4867-9D2E-DA9A42B74E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4FD63F3-220D-4867-9D2E-DA9A42B74E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4FD63F3-220D-4867-9D2E-DA9A42B74E8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D83A9845-AE7E-4176-9176-D7E832AF22C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D83A9845-AE7E-4176-9176-D7E832AF22C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D83A9845-AE7E-4176-9176-D7E832AF22C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D83A9845-AE7E-4176-9176-D7E832AF22C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

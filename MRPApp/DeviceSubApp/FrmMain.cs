@@ -162,8 +162,16 @@ namespace DeviceSubApp
         {
             client.Connect(TxtClientID.Text);   // SUBSCR01
             UpdateText(">>>> Client Connected");
-            client.Subscribe(new string[] { TxtSubscriptionTopic.Text },
-                new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });  // QoS 0
+            // Subscribe
+            //client.Subscribe(new string[] { TxtSubscriptionTopic.Text },
+            //    new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });  // QoS 0
+
+            // Publish
+            client.Publish(TxtSubscriptionTopic.Text, // topic
+                              Encoding.UTF8.GetBytes("MyMessageBody"), // message body
+                              0, // QoS level
+                              true); // retained
+
             UpdateText(">>>> Subscribing to :" + TxtSubscriptionTopic.Text);
 
             BtnConnect.Enabled = false;
