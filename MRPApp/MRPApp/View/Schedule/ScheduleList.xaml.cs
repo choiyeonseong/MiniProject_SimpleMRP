@@ -45,13 +45,18 @@ namespace MRPApp.View.Schedule
 
         private async void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
+            // 수정할 값이 유효한지 검사
+            if (IsValidUpdates() != true) return;
+
             var item = GrdData.SelectedItem as Model.Schedules;
 
             item.PlantCode = CboPlantCode.SelectedValue.ToString();
             item.SchDate = DateTime.Parse(DtpSchDate.Text);
             item.SchLoadTime = int.Parse(TxtSchLoadTime.Text);
-            item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
-            item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            if(TmpSchStartTime.SelectedDateTime!=null)
+                item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
+            if(TmpSchEndTime.SelectedDateTime!=null)
+                item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
             item.SchFacilityID = CboSchFacilityID.SelectedValue.ToString();
             item.SchAmount = (int)NudSchAmount.Value;
             item.ModDate = DateTime.Now;
@@ -96,8 +101,10 @@ namespace MRPApp.View.Schedule
             item.PlantCode = CboPlantCode.SelectedValue.ToString();
             item.SchDate = DateTime.Parse(DtpSchDate.Text);
             item.SchLoadTime = int.Parse(TxtSchLoadTime.Text);
-            item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
-            item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchStartTime.SelectedDateTime != null)   // 예외처리 - 날짜 선택 안된 경우
+                item.SchStartTime = TmpSchStartTime.SelectedDateTime.Value.TimeOfDay;
+            if (TmpSchEndTime.SelectedDateTime != null)     // 예외처리 - 날짜 선택 안된 경우
+                item.SchEndTime = TmpSchEndTime.SelectedDateTime.Value.TimeOfDay;
             item.SchFacilityID = CboSchFacilityID.SelectedValue.ToString();
             item.SchAmount = (int)NudSchAmount.Value;
             item.RegDate = DateTime.Now;
@@ -127,6 +134,7 @@ namespace MRPApp.View.Schedule
         // 선택한 셀값을 입력창에 표시
         private void GrdData_SelectedCellsChanged(object sender, SelectedCellsChangedEventArgs e)
         {
+            ClearInputs();  // 이전에 표시된 데이터 삭제
             try
             {
                 var item = GrdData.SelectedItem as Model.Schedules;
@@ -135,8 +143,10 @@ namespace MRPApp.View.Schedule
                 CboPlantCode.SelectedValue = item.PlantCode;
                 DtpSchDate.Text = item.SchDate.ToString();
                 TxtSchLoadTime.Text = item.SchLoadTime.ToString();
-                TmpSchStartTime.SelectedDateTime = new DateTime(item.SchStartTime.Value.Ticks);
-                TmpSchEndTime.SelectedDateTime = new DateTime(item.SchEndTime.Value.Ticks);
+                if(item.SchStartTime!=null)
+                    TmpSchStartTime.SelectedDateTime = new DateTime(item.SchStartTime.Value.Ticks);
+                if(item.SchEndTime!=null)
+                    TmpSchEndTime.SelectedDateTime = new DateTime(item.SchEndTime.Value.Ticks);
                 CboSchFacilityID.SelectedValue = item.SchFacilityID;
                 NudSchAmount.Value = item.SchAmount;
             }
@@ -227,7 +237,67 @@ namespace MRPApp.View.Schedule
                 LblSchLoadTime.Text = "로드타임을 입력하세요";
                 isValid = false;
             }
-            
+
+            // TODO : 로드타임에 숫자가 아닌값이 들어가면 안됨(pass)
+
+            if (CboSchFacilityID.SelectedValue == null)
+            {
+                LblSchFacilityID.Visibility = Visibility.Visible;
+                LblSchFacilityID.Text = "공정설비를 선택하세요";
+                isValid = false;
+            }
+
+            if (NudSchAmount.Value <= 0)
+            {
+                LblSchAmount.Visibility = Visibility.Visible;
+                LblSchAmount.Text = "계획수량은 0개 이상입니다.";
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // 수정데이터 검증 메서드 (입력창이 많을수록 길어짐)
+        public bool IsValidUpdates()
+        {
+            var isValid = true;
+            InitErrorMessage();
+
+            if (CboPlantCode.SelectedValue == null)
+            {
+                LblPlantCode.Visibility = Visibility.Visible;
+                LblPlantCode.Text = "공장을 선택하세요";
+                isValid = false;
+            }
+
+            if (string.IsNullOrEmpty(DtpSchDate.Text))
+            {
+                LblSchDate.Visibility = Visibility.Visible;
+                LblSchDate.Text = "공정일을 입력하세요";
+                isValid = false;
+            }
+
+            //// 공장별로 공정일이 이미 DB상에 값이 있으면 중복 안됨
+            //// PC010001(수원) 2021-06-24
+            //if (CboPlantCode.SelectedValue != null && string.IsNullOrEmpty(DtpSchDate.Text))
+            //{
+            //    var result = Logic.DataAccess.GetSchedules().Where(s => s.PlantCode.Equals(CboPlantCode.SelectedValue.ToString()))
+            //        .Where(d => d.SchDate.Equals(DateTime.Parse(DtpSchDate.Text))).Count();
+            //    if (result > 0)
+            //    {
+            //        LblSchDate.Visibility = Visibility.Visible;
+            //        LblSchDate.Text = "해당 공장 공정일에 계획이 이미 있습니다.";
+            //        isValid = false;
+            //    }
+            //}
+
+            if (string.IsNullOrEmpty(TxtSchLoadTime.Text))
+            {
+                LblSchLoadTime.Visibility = Visibility.Visible;
+                LblSchLoadTime.Text = "로드타임을 입력하세요";
+                isValid = false;
+            }
+
             // TODO : 로드타임에 숫자가 아닌값이 들어가면 안됨(pass)
 
             if (CboSchFacilityID.SelectedValue == null)

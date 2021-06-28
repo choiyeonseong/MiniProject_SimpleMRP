@@ -19,6 +19,8 @@ using MRPApp.View.Account;
 using MRPApp.View.Store;
 using MRPApp.View.Setting;
 using MRPApp.View.Schedule;
+using MRPApp.View.Process;
+using System.Configuration;
 
 namespace MRPApp
 {
@@ -30,7 +32,7 @@ namespace MRPApp
         public MainWindow()
         {
             InitializeComponent();
-        }       
+        }
 
         private void MetroWindow_ContentRendered(object sender, EventArgs e)
         {
@@ -38,9 +40,18 @@ namespace MRPApp
 
         private void MetroWindow_Activated(object sender, EventArgs e)
         {
-            //// 로그인된 계정 표시
-            //if (Commons.LOGINED_USER != null)
-            //    BtnLoginedId.Content = $"{Commons.LOGINED_USER.UserEmail} ({Commons.LOGINED_USER.UserName})";
+            // 공장코드
+            Commons.PLANTCODE = ConfigurationManager.AppSettings.Get("PlantCode");
+
+            try
+            {
+                var plantName = Logic.DataAccess.GetSettings().Where(c => c.BasicCode.Equals(Commons.PLANTCODE)).FirstOrDefault();
+                BtnPlantName.Content = plantName.CodeName;
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 : {ex}");
+            }
         }
 
         private async void BtnExit_Click(object sender, RoutedEventArgs e)
@@ -80,7 +91,15 @@ namespace MRPApp
 
         private void BtnMonitoring_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                ActiveControl.Content = new ProcessView();
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 BtnMonitoring_Click : {ex}");
+                this.ShowMessageAsync("예외", $"예외발생 : {ex}");
+            }
         }
 
         private void BtnReport_Click(object sender, RoutedEventArgs e)
