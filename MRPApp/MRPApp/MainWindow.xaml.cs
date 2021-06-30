@@ -1,26 +1,13 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MRPApp.View;
-using MRPApp.View.Account;
-using MRPApp.View.Store;
 using MRPApp.View.Setting;
 using MRPApp.View.Schedule;
 using MRPApp.View.Process;
 using System.Configuration;
+using MRPApp.View.Report;
 
 namespace MRPApp
 {
@@ -42,6 +29,7 @@ namespace MRPApp
         {
             // 공장코드
             Commons.PLANTCODE = ConfigurationManager.AppSettings.Get("PlantCode");
+            Commons.FACILITYID = ConfigurationManager.AppSettings.Get("FacilityID");
 
             try
             {
@@ -104,7 +92,15 @@ namespace MRPApp
 
         private void BtnReport_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                ActiveControl.Content = new ReportView();
+            }
+            catch (Exception ex)
+            {
+                Commons.LOGGER.Error($"예외발생 ReportView_Click : {ex}");
+                this.ShowMessageAsync("예외", $"예외발생 : {ex}");
+            }
         }
     }
 }

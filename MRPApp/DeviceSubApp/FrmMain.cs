@@ -67,7 +67,7 @@ namespace DeviceSubApp
         {
             LblResult.Text = sw.Elapsed.Seconds.ToString();
 
-            if (sw.Elapsed.Seconds >= 3)
+            if (sw.Elapsed.Seconds >= 2)    // 2초 대기후
             {
                 sw.Stop();
                 sw.Reset();
@@ -90,22 +90,13 @@ namespace DeviceSubApp
                 using (var conn = new SqlConnection(connectionString))
                 {
                     var prcResult = correctData["PRC_MSG"] == "OK" ? 1 : 0;
-                    
-                    string strUpQuery = $"UPDATE Process_DEV " +
-                                        $"   SET PrcEndTime = '{DateTime.Now.ToString("HH:mm:ss")}' " +
-                                        $"       ,PrcResult = '{prcResult}' " +
-                                        $"       ,ModDate = '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' " +
-                                        $"       ,ModID = '{"SYS"}' " +
-                                        $" WHERE PrcIdx = " +
-                                        $"       (select top 1 PrcIdx from Process_DEV ORDER BY PrcIdx DESC)";
-                    
-                    //string strUpQuery = $@"UPDATE Process_DEV
-                    //                    SET PrcEndTime = {}
-                    //                        ,PrcResult = {}
-                    //                        ,ModDate = {}
-                    //                        ,ModID = {}
-                    //                  WHERE PrcIdx = 
-                    //                  (select top 1 PrcIdx from Process_DEV ORDER BY PrcIdx DESC)";
+
+                    string strUpQuery = $"UPDATE Process " +
+                                      $"   SET PrcResult = '{prcResult}' " +
+                                      $"     , ModDate = '{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}' " +
+                                      $"     , ModID = '{"SYS"}' " +
+                                      $" WHERE PrcIdx = " +
+                                      $" (SELECT TOP 1 PrcIdx FROM Process ORDER BY PrcIdx DESC)";
 
                     try
                     {
@@ -162,15 +153,15 @@ namespace DeviceSubApp
         {
             client.Connect(TxtClientID.Text);   // SUBSCR01
             UpdateText(">>>> Client Connected");
-            // Subscribe
-            //client.Subscribe(new string[] { TxtSubscriptionTopic.Text },
-            //    new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });  // QoS 0
+            //Subscribe
+            client.Subscribe(new string[] { TxtSubscriptionTopic.Text },
+                new byte[] { MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE });  // QoS 0
 
-            // Publish
-            client.Publish(TxtSubscriptionTopic.Text, // topic
-                              Encoding.UTF8.GetBytes("MyMessageBody"), // message body
-                              0, // QoS level
-                              true); // retained
+            //// Publish
+            //client.Publish(TxtSubscriptionTopic.Text, // topic
+            //                  Encoding.UTF8.GetBytes("MyMessageBody"), // message body
+            //                  0, // QoS level
+            //                  true); // retained
 
             UpdateText(">>>> Subscribing to :" + TxtSubscriptionTopic.Text);
 

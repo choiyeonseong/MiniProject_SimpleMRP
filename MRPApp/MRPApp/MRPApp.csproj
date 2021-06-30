@@ -56,6 +56,9 @@
     <Reference Include="itextsharp, Version=5.5.13.2, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13.2\lib\itextsharp.dll</HintPath>
     </Reference>
+    <Reference Include="M2Mqtt.Net, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\M2Mqtt.4.3.0.0\lib\net45\M2Mqtt.Net.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=2.0.0.0, Culture=neutral, PublicKeyToken=51482d6f650b2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.2.4.4\lib\net47\MahApps.Metro.dll</HintPath>
     </Reference>
@@ -155,6 +158,9 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.9\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -170,12 +176,20 @@
     <Reference Include="NPOI.OpenXmlFormats, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
       <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot, Version=2.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.2.0.0\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=2.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.2.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Printing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
@@ -234,6 +248,9 @@
     <Compile Include="View\Process\ProcessView.xaml.cs">
       <DependentUpon>ProcessView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Report\ReportView.xaml.cs">
+      <DependentUpon>ReportView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Schedule\ScheduleList.xaml.cs">
       <DependentUpon>ScheduleList.xaml</DependentUpon>
     </Compile>
@@ -266,6 +283,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\Process\ProcessView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Report\ReportView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
