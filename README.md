@@ -29,7 +29,6 @@ SmartFactory 공정관리 with RaspberryPi
 
 ## 공정 모니터링 
 1. 공정 계획 
-</br>
 <img src="readme_img/schedules.png" width="450"></img>
 
 - 공정일자에 따른 공장, 로드타임, 공정시간, 공정설비, 계획수량을 입력, 수정하고 DB에 저장
@@ -37,7 +36,6 @@ SmartFactory 공정관리 with RaspberryPi
 [ScheduleView](MRPApp/MRPApp/View/Schedule/)
  
 2. 공정 모니터링 
-</br>
 <img src="readme_img/beforemonitoring.png" width="450"></img><br/>
 <img src="readme_img/aftersensing.png" width="450"></img>
 
@@ -48,7 +46,6 @@ SmartFactory 공정관리 with RaspberryPi
 [ProcessView](MRPApp/MRPApp/View/Process/)
 
 3. 리포트 
-</br>
 <img src="readme_img/reportview.png" width="450"></img>
 
 - 선택한 공정일의 계획수량, 성공수량, 실패수량을 그래프로 표현
@@ -57,7 +54,6 @@ SmartFactory 공정관리 with RaspberryPi
 [ReportView](MRPApp/MRPApp/View/Report/)
 
 4. 설정 
-</br>
 <img src="readme_img/settingview.png" width="450"></img>
 
 - 설비, 공장에 대한 정보를 코드, 코드명, 코드설명으로 입력, 수정하고 DB에 저장
